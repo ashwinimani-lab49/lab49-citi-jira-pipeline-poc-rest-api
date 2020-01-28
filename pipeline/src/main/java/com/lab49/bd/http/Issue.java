@@ -1,5 +1,10 @@
 package com.lab49.bd.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lab49.bd.config.JiraConfigProperties;
+import com.lab49.bd.model.CreateIssueRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.apache.http.auth.AuthenticationException;
@@ -12,33 +17,29 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Issue {
   final static Logger logger = Logger.getLogger(Issue.class);
+  @Autowired
+  private JiraConfigProperties jiraConfigProperties;
 
-  public static void create(String Url) {
+  public void create(String Url, CreateIssueRequest request) {
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(Url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("amani", "admin");
-    String json = "{\n"
-        + "\t\"fields\": {\n"
-        + "\t\t\"project\": {\n"
-        + "\t\t\t\"key\": \"RAPI\"\n"
-        + "\t\t},\n"
-        + "\t\t\"issuetype\": {\n"
-        + "\t\t\t\"id\": \"10000\"\n"
-        + "\t\t},\n"
-        + "\t\t\"summary\": \"something's wrong from Apache HttpClient!\"\n"
-        + "\t}\n"
-        + "}";
+    ObjectMapper objectMapper = new ObjectMapper();
     try {
-      StringEntity entity = new StringEntity(json);
+      String jacksonJson = objectMapper.writeValueAsString(request);
+      StringEntity entity = new StringEntity(jacksonJson);
       httpPost.setEntity(entity);
       httpPost.setHeader("Accept", "application/json");
       httpPost.setHeader("Content-type", "application/json");
       httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
       CloseableHttpResponse response = client.execute(httpPost);
-      logger.trace("Response: " + response);
+      logger.trace("Response: " + response.getStatusLine());
+    } catch (JsonProcessingException e) {
+      logger.error("JsonProcessing Error when Jackson tried to convert", e);
     } catch (AuthenticationException e) {
       logger.error("Authentication Error", e);
     } catch (UnsupportedEncodingException e) {
