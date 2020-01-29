@@ -19,13 +19,15 @@ public class FlowConfiguration {
   @Autowired
   public StepBuilderFactory stepBuilderFactory;
 
+  @Autowired
+  public Issue issue;
+
   @Bean
   public Step createIssueInJira() {
     return stepBuilderFactory.get("createIssueStep")
         .tasklet((stepContribution, chunkContext) -> {
-          Fields fields = new Fields(new Project("RAPI"), new IssueType("10000"), "Created from sprint batch step :)");
+          Fields fields = new Fields(new Project("RAPI"), new IssueType("10000"), "Config set up");
           JiraIssue jiraIssue = new JiraIssue(fields);
-          Issue issue = new Issue();
           issue.create("http://localhost:8080/rest/api/latest/issue", jiraIssue);
           return RepeatStatus.FINISHED;
         })

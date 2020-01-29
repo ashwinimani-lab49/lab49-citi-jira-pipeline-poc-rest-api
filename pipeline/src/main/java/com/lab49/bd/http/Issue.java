@@ -17,7 +17,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Issue {
   final static Logger logger = Logger.getLogger(Issue.class);
   @Autowired
@@ -26,7 +28,7 @@ public class Issue {
   public void create(String Url, JiraIssue request) {
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(Url);
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("amani", "admin");
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
     logger.warn("jira config: " + jiraConfigProperties);
     ObjectMapper objectMapper = new ObjectMapper();
     try {
