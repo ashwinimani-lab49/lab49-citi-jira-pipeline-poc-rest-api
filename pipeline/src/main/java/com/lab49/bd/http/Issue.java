@@ -59,10 +59,7 @@ public class Issue {
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
-    String requestBody = "{\n"
-        + "\t\"jql\": \"project = RAPI AND updated > '2020/01/29 14:30'\",\n"
-        + "\t\"fields\": [\"*all\"]\n"
-        + "}";
+    String requestBody = "{\"jql\": \"project = " + projectKey + " AND updated > '" + updatedAfter + "'\",\"fields\": [\"*all\"]}";
     BasicResponseHandler handler = new BasicResponseHandler();
     try {
       StringEntity entity = new StringEntity(requestBody);
