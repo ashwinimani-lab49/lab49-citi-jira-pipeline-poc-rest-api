@@ -27,6 +27,7 @@ public class Issue {
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(Url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("amani", "admin");
+    logger.warn("jira config: " + jiraConfigProperties);
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       String jacksonJson = objectMapper.writeValueAsString(request);
