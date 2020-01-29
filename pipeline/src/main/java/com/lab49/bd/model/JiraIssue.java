@@ -4,7 +4,7 @@ import com.sun.istack.internal.NotNull;
 import lombok.Data;
 
 @Data
-public class CreateIssueRequest {
+public class JiraIssue {
   @NotNull
   private final Fields fields;
 }

@@ -3,8 +3,7 @@ package com.lab49.bd.http;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab49.bd.config.JiraConfigProperties;
-import com.lab49.bd.model.CreateIssueRequest;
-import java.io.File;
+import com.lab49.bd.model.JiraIssue;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.apache.http.auth.AuthenticationException;
@@ -24,7 +23,7 @@ public class Issue {
   @Autowired
   private JiraConfigProperties jiraConfigProperties;
 
-  public void create(String Url, CreateIssueRequest request) {
+  public void create(String Url, JiraIssue request) {
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(Url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("amani", "admin");
