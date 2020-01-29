@@ -9,10 +9,12 @@ import java.io.UnsupportedEncodingException;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
@@ -29,7 +31,6 @@ public class Issue {
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(Url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
-    logger.warn("jira config: " + jiraConfigProperties);
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       String jacksonJson = objectMapper.writeValueAsString(request);
@@ -39,7 +40,8 @@ public class Issue {
       httpPost.setHeader("Content-type", "application/json");
       httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
       CloseableHttpResponse response = client.execute(httpPost);
-      logger.trace("Response: " + response.getStatusLine());
+      logger.warn("Create Response: " + response.getStatusLine());
+      client.close();
     } catch (JsonProcessingException e) {
       logger.error("JsonProcessing Error when Jackson tried to convert", e);
     } catch (AuthenticationException e) {
@@ -51,6 +53,36 @@ public class Issue {
     } catch (IOException e) {
       logger.error("I/O Error", e);
     }
+  }
+
+  public void get(String url, String projectKey, String updatedAfter) {
+    CloseableHttpClient client = HttpClients.createDefault();
+    HttpPost httpPost = new HttpPost(url);
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
+    String requestBody = "{\n"
+        + "\t\"jql\": \"project = RAPI AND updated > '2020/01/29 14:30'\",\n"
+        + "\t\"fields\": [\"*all\"]\n"
+        + "}";
+    BasicResponseHandler handler = new BasicResponseHandler();
+    try {
+      StringEntity entity = new StringEntity(requestBody);
+      httpPost.setEntity(entity);
+      httpPost.setHeader("Accept", "application/json");
+      httpPost.setHeader("Content-type", "application/json");
+      httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
+      CloseableHttpResponse response = client.execute(httpPost);
+      logger.warn("Get Response: " + handler.handleResponse(response));
+      client.close();
+    } catch (UnsupportedEncodingException e) {
+      logger.error("Json Encoding Error", e);
+    } catch (AuthenticationException e) {
+      logger.error("Authentication Error", e);
+    } catch (ClientProtocolException e) {
+      logger.error("ClientProtocol Error", e);
+    } catch (IOException e) {
+      logger.error("I/O Error", e);
+    }
+
   }
 
 }

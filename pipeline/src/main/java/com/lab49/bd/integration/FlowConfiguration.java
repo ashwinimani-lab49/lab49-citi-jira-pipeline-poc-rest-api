@@ -30,14 +30,23 @@ public class FlowConfiguration {
           JiraIssue jiraIssue = new JiraIssue(fields);
           issue.create("http://localhost:8080/rest/api/latest/issue", jiraIssue);
           return RepeatStatus.FINISHED;
-        })
-        .build();
+        }).build();
+  }
+
+  @Bean
+  public Step getAllIssuesAfterLastSync() {
+    return stepBuilderFactory.get("getIssuesStep")
+        .tasklet((stepContribution, chunkContext) -> {
+          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/29 14:08");
+          return RepeatStatus.FINISHED;
+        }).build();
   }
 
   @Bean
   public Flow jiraIssueCreationFlow() {
     FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("jiraIssueCreationFlow");
-    flowBuilder.start(createIssueInJira())
+    flowBuilder.start(getAllIssuesAfterLastSync())
+        .next(createIssueInJira())
         .end();
     return flowBuilder.build();
 
