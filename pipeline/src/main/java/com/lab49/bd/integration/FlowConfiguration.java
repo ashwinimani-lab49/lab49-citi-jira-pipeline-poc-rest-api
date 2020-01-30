@@ -26,8 +26,16 @@ public class FlowConfiguration {
   public Step createIssueInJira() {
     return stepBuilderFactory.get("createIssueStep")
         .tasklet((stepContribution, chunkContext) -> {
-          Fields fields = new Fields(new Project("RAPI"), new IssueType("10000"), "Config set up");
-          JiraIssue jiraIssue = new JiraIssue(fields);
+          IssueType issueType = new IssueType();
+          issueType.setId("10000");
+          Project project = new Project();
+          project.setKey("RAPI");
+          Fields fields = new Fields();
+          fields.setProject(project);
+          fields.setIssuetype(issueType);
+          fields.setSummary("Config set up");
+          JiraIssue jiraIssue = new JiraIssue();
+          jiraIssue.setFields(fields);
           issue.create("http://localhost:8080/rest/api/latest/issue", jiraIssue);
           return RepeatStatus.FINISHED;
         }).build();
@@ -37,7 +45,7 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/29 14:08");
+          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/30 10:00");
           return RepeatStatus.FINISHED;
         }).build();
   }

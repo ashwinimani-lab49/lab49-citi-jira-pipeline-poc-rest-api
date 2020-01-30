@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab49.bd.config.JiraConfigProperties;
 import com.lab49.bd.model.JiraIssue;
+import com.lab49.bd.model.JiraIssues;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.apache.http.auth.AuthenticationException;
@@ -56,11 +57,12 @@ public class Issue {
   }
 
   public void get(String url, String projectKey, String updatedAfter) {
+    ObjectMapper objectMapper = new ObjectMapper();
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
     String requestBody = "{\"jql\": \"project = " + projectKey + " AND updated > '" + updatedAfter + "'\",\"fields\": [\"*all\"]}";
-    BasicResponseHandler handler = new BasicResponseHandler();
+    ResponseHandler<String> handler = new BasicResponseHandler();
     try {
       StringEntity entity = new StringEntity(requestBody);
       httpPost.setEntity(entity);
@@ -68,7 +70,10 @@ public class Issue {
       httpPost.setHeader("Content-type", "application/json");
       httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
       CloseableHttpResponse response = client.execute(httpPost);
-      logger.warn("Get Response: " + handler.handleResponse(response));
+      String responseBody = handler.handleResponse(response);
+      logger.warn("Get Response: " + responseBody);
+      JiraIssues jiraIssues = objectMapper.readValue(responseBody, JiraIssues.class);
+      logger.warn("Get JiraIssue: " + jiraIssues);
       client.close();
     } catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);

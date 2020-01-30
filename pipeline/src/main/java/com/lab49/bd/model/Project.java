@@ -1,11 +1,12 @@
 package com.lab49.bd.model;
 
-import com.sun.istack.internal.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@NoArgsConstructor
 public class Project {
-  @NotNull
-  private final String key;
-
+  private String key;
 }
