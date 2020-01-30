@@ -1,7 +1,9 @@
 package com.lab49.bd.http;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lab49.bd.config.JiraConfigProperties;
 import com.lab49.bd.model.JiraIssue;
 import com.lab49.bd.model.JiraIssues;
@@ -33,9 +35,12 @@ public class Issue {
     HttpPost httpPost = new HttpPost(Url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
     ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.setSerializationInclusion(Include.NON_NULL);
+    objectMapper.setSerializationInclusion(Include.NON_EMPTY);
     try {
       String jacksonJson = objectMapper.writeValueAsString(request);
       StringEntity entity = new StringEntity(jacksonJson);
+      logger.warn("Create request" + jacksonJson);
       httpPost.setEntity(entity);
       httpPost.setHeader("Accept", "application/json");
       httpPost.setHeader("Content-type", "application/json");
@@ -57,7 +62,7 @@ public class Issue {
   }
 
   public void get(String url, String projectKey, String updatedAfter) {
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     CloseableHttpClient client = HttpClients.createDefault();
     HttpPost httpPost = new HttpPost(url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());

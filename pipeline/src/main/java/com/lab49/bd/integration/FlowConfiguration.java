@@ -45,7 +45,7 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/30 10:00");
+          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/30 11:05");
           return RepeatStatus.FINISHED;
         }).build();
   }

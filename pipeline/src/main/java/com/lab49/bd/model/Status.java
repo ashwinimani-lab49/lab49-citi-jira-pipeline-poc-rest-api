@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @NoArgsConstructor
-public class IssueType {
+public class Status {
   private String self;
-  private String id;
   private String description;
   private String name;
-  private boolean subtask;
+  private String id;
+  private StatusCategory statusCategory;
 }

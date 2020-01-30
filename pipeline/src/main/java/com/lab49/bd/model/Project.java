@@ -8,5 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Project {
+  private String self;
+  private String id;
   private String key;
+  private String name;
+  private String projectTypeKey;
 }
