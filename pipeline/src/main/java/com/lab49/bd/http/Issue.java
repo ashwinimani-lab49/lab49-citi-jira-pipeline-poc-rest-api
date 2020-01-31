@@ -37,6 +37,18 @@ public class Issue {
     objectMapper.setSerializationInclusion(Include.NON_EMPTY);
   }
 
+  public enum Status {
+    TO_DO("31"),
+    IN_PROGRESS("11"),
+    DONE("41");
+
+    public final String transitionID;
+
+    private Status(String transitionID) {
+      this.transitionID = transitionID;
+    }
+  }
+
   public void create(String Url, JiraIssue request) {
     HttpPost httpPost = new HttpPost(Url);
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
@@ -81,6 +93,24 @@ public class Issue {
       logger.error("I/O Error", e);
     }
 
+  }
+
+  public void updateStatus(String issueKey, Status status) {
+    String url = "http://localhost:8080/rest/api/latest/issue/" + issueKey + "/transitions";
+    HttpPost httpPost = new HttpPost(url);
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
+    String requestBody = "{\"transition\": {\"id\": \"" + status.transitionID + "\"}}";
+    try {
+      StringEntity entity = new StringEntity(requestBody);
+      HttpResponse response = client.execute(setHeader(httpPost, entity, credentials));
+      logger.warn("Update status Response: " + response.getStatusLine());
+    }catch (UnsupportedEncodingException e) {
+      logger.error("Json Encoding Error", e);
+    } catch (AuthenticationException e) {
+      logger.error("Authentication Error", e);
+    } catch (IOException e) {
+      logger.error("I/O Error", e);
+    }
   }
 
   private HttpPost setHeader(HttpPost httpPost, StringEntity entity, Credentials credentials) throws AuthenticationException{

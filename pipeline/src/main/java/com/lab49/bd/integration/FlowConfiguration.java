@@ -1,6 +1,7 @@
 package com.lab49.bd.integration;
 
 import com.lab49.bd.http.Issue;
+import com.lab49.bd.http.Issue.Status;
 import com.lab49.bd.model.Fields;
 import com.lab49.bd.model.IssueType;
 import com.lab49.bd.model.JiraIssue;
@@ -45,7 +46,16 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/30 11:40");
+          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/31 10:14");
+          return RepeatStatus.FINISHED;
+        }).build();
+  }
+
+  @Bean
+  public Step updateStatusOfIssue() {
+    return stepBuilderFactory.get("updateIssuesStatus")
+        .tasklet((stepContribution, chunkContext) -> {
+          issue.updateStatus("RAPI-37", Status.IN_PROGRESS);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -55,6 +65,7 @@ public class FlowConfiguration {
     FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("jiraIssueCreationFlow");
     flowBuilder.start(getAllIssuesAfterLastSync())
         .next(createIssueInJira())
+        .next(updateStatusOfIssue())
         .end();
     return flowBuilder.build();
 
