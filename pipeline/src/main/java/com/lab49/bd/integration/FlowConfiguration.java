@@ -54,7 +54,7 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("RAPI", "2020/01/31 11:20");
+          issue.get("RAPI", getFormattedDateTime());
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -63,7 +63,7 @@ public class FlowConfiguration {
   public Step updateStatusOfIssue() {
     return stepBuilderFactory.get("updateIssuesStatus")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.updateStatus("RAPI-44", Status.IN_PROGRESS);
+          issue.updateStatus("RAPI-48", Status.IN_PROGRESS);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -71,8 +71,8 @@ public class FlowConfiguration {
   @Bean
   public Flow jiraIssueCreationFlow() {
     FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("jiraIssueCreationFlow");
-    flowBuilder.start(getAllIssuesAfterLastSync())
-        .next(createIssueInJira())
+    flowBuilder.start(createIssueInJira())
+        .next(getAllIssuesAfterLastSync())
         .next(updateStatusOfIssue())
         .end();
     return flowBuilder.build();
