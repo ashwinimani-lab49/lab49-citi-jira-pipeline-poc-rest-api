@@ -7,8 +7,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lab49.bd.config.JiraConfigProperties;
 import com.lab49.bd.model.JiraIssue;
 import com.lab49.bd.model.JiraIssues;
+import com.lab49.bd.url.JiraRESTAPI;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -52,9 +55,9 @@ public class Issue {
     }
   }
 
-  public void create(String Url, JiraIssue request) {
-    HttpPost httpPost = new HttpPost(Url);
+  public void create(JiraIssue request) {
     try {
+      HttpPost httpPost = new HttpPost(JiraRESTAPI.getIssueEndPoint());
       String jacksonJson = objectMapper.writeValueAsString(request);
       StringEntity entity = new StringEntity(jacksonJson);
       logger.warn("Create request" + jacksonJson);
@@ -77,13 +80,15 @@ public class Issue {
       logger.error("ClientProtocol Error", e);
     } catch (IOException e) {
       logger.error("I/O Error", e);
+    } catch (URISyntaxException e) {
+      logger.error("URISyntaxException Error", e);
     }
   }
 
-  public void get(String url, String projectKey, String updatedAfter) {
-    HttpPost httpPost = new HttpPost(url);
+  public void get(String projectKey, String updatedAfter) {
     String requestBody = "{\"jql\": \"project = " + projectKey + " AND updated > '" + updatedAfter + "'\",\"fields\": [\"*all\"]}";
     try {
+      HttpPost httpPost = new HttpPost(JiraRESTAPI.getSearchEndPoint());
       StringEntity entity = new StringEntity(requestBody);
       HttpResponse response = client.execute(setHeader(httpPost, entity));
       String responseBody = handler.handleResponse(response);
@@ -99,16 +104,18 @@ public class Issue {
       logger.error("ClientProtocol Error", e);
     } catch (IOException e) {
       logger.error("I/O Error", e);
+    } catch (URISyntaxException e) {
+      logger.error("URISyntaxException Error", e);
     }
 
   }
 
   public void updateStatus(String issueKey, Status status) {
-    String url = "http://localhost:8080/rest/api/latest/issue/" + issueKey + "/transitions";
-    HttpPost httpPost = new HttpPost(url);
     String requestBody = "{\"transition\": {\"id\": \"" + status.transitionID + "\"}}";
     logger.warn("Update request: " + requestBody);
     try {
+      String url = JiraRESTAPI.getIssueEndPoint() + "/" + issueKey + "/" +"/transitions";
+      HttpPost httpPost = new HttpPost(url);
       StringEntity entity = new StringEntity(requestBody);
       HttpResponse response = client.execute(setHeader(httpPost, entity));
       logger.warn("Update status Response: " + response.getStatusLine());
@@ -118,6 +125,8 @@ public class Issue {
       logger.error("Authentication Error", e);
     } catch (IOException e) {
       logger.error("I/O Error", e);
+    } catch (URISyntaxException e) {
+      logger.error("URISyntaxException Error", e);
     }
   }
 

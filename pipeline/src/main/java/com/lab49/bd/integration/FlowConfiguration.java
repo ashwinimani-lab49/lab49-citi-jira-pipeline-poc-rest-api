@@ -45,7 +45,7 @@ public class FlowConfiguration {
           fields.setSummary("Creating issue at " + getFormattedDateTime());
           JiraIssue jiraIssue = new JiraIssue();
           jiraIssue.setFields(fields);
-          issue.create("http://localhost:8080/rest/api/latest/issue", jiraIssue);
+          issue.create(jiraIssue);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -54,7 +54,7 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("http://localhost:8080/rest/api/latest/search", "RAPI", "2020/01/31 10:40");
+          issue.get("RAPI", "2020/01/31 11:20");
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -63,7 +63,7 @@ public class FlowConfiguration {
   public Step updateStatusOfIssue() {
     return stepBuilderFactory.get("updateIssuesStatus")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.updateStatus("RAPI-43", Status.IN_PROGRESS);
+          issue.updateStatus("RAPI-44", Status.IN_PROGRESS);
           return RepeatStatus.FINISHED;
         }).build();
   }
