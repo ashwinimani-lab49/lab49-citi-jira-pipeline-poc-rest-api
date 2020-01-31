@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lab49.bd.config.JiraConfigProperties;
+import com.lab49.bd.model.Comment;
 import com.lab49.bd.model.JiraIssue;
 import com.lab49.bd.model.JiraIssues;
 import com.lab49.bd.url.JiraRESTAPI;
@@ -114,12 +115,34 @@ public class Issue {
     String requestBody = "{\"transition\": {\"id\": \"" + status.transitionID + "\"}}";
     logger.warn("Update request: " + requestBody);
     try {
-      String url = JiraRESTAPI.getIssueEndPoint() + "/" + issueKey + "/" +"/transitions";
+      String url = JiraRESTAPI.getIssueEndPoint() + "/" + issueKey +"/transitions";
       HttpPost httpPost = new HttpPost(url);
       StringEntity entity = new StringEntity(requestBody);
       HttpResponse response = client.execute(setHeader(httpPost, entity));
+      String responseBody = handler.handleResponse(response);
       logger.warn("Update status Response: " + response.getStatusLine());
-    }catch (UnsupportedEncodingException e) {
+    } catch (UnsupportedEncodingException e) {
+      logger.error("Json Encoding Error", e);
+    } catch (AuthenticationException e) {
+      logger.error("Authentication Error", e);
+    } catch (IOException e) {
+      logger.error("I/O Error", e);
+    } catch (URISyntaxException e) {
+      logger.error("URISyntaxException Error", e);
+    }
+  }
+
+  public void addComment(String issueKey, String commentBody) {
+    String requestBody = "{\"body\": \"" + commentBody +"\"}";
+    try {
+      String url = JiraRESTAPI.getIssueEndPoint() + "/" + issueKey +"/comment";
+      HttpPost httpPost = new HttpPost(url);
+      StringEntity entity = new StringEntity(requestBody);
+      HttpResponse response = client.execute(setHeader(httpPost, entity));
+      String responseBody = handler.handleResponse(response);
+      Comment addedComment = objectMapper.readValue(responseBody, Comment.class);
+      logger.warn("Add comment: " + addedComment.getBody() + "at: " + addedComment.getCreated());
+    } catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);
     } catch (AuthenticationException e) {
       logger.error("Authentication Error", e);

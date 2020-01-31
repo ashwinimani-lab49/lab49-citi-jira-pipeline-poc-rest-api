@@ -63,7 +63,16 @@ public class FlowConfiguration {
   public Step updateStatusOfIssue() {
     return stepBuilderFactory.get("updateIssuesStatus")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.updateStatus("RAPI-48", Status.IN_PROGRESS);
+          issue.updateStatus("RAPI-51", Status.IN_PROGRESS);
+          return RepeatStatus.FINISHED;
+        }).build();
+  }
+
+  @Bean
+  public Step addComment() {
+    return stepBuilderFactory.get("addComment")
+        .tasklet((stepContribution, chunkContext) -> {
+          issue.addComment("RAPI-51", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -74,6 +83,7 @@ public class FlowConfiguration {
     flowBuilder.start(createIssueInJira())
         .next(getAllIssuesAfterLastSync())
         .next(updateStatusOfIssue())
+        .next(addComment())
         .end();
     return flowBuilder.build();
 
