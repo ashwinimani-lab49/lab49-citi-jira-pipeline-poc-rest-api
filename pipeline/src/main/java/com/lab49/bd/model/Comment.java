@@ -15,7 +15,6 @@ public class Comment {
   private String body;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   private ZonedDateTime created;
-  private Comments comment;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   private ZonedDateTime updated;
 }

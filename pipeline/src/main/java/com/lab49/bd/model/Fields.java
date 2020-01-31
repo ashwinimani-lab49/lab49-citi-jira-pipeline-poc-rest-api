@@ -18,6 +18,7 @@ public class Fields {
   private ZonedDateTime lastViewed;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   private ZonedDateTime created;
+  private Comments comment;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   private ZonedDateTime updated;
   private Status status;
