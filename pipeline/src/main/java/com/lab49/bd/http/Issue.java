@@ -9,9 +9,11 @@ import com.lab49.bd.model.JiraIssue;
 import com.lab49.bd.model.JiraIssues;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthenticationException;
-import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -30,6 +32,7 @@ public class Issue {
   final static Logger logger = Logger.getLogger(Issue.class);
   @Autowired
   private JiraConfigProperties jiraConfigProperties;
+  final static ResponseHandler<String> handler = new BasicResponseHandler();
   final static HttpClient client = HttpClients.createDefault();
   final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
   static {
@@ -51,13 +54,19 @@ public class Issue {
 
   public void create(String Url, JiraIssue request) {
     HttpPost httpPost = new HttpPost(Url);
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
     try {
       String jacksonJson = objectMapper.writeValueAsString(request);
       StringEntity entity = new StringEntity(jacksonJson);
       logger.warn("Create request" + jacksonJson);
-      HttpResponse response = client.execute(setHeader(httpPost, entity, credentials));
-      logger.warn("Create Response: " + response.getStatusLine());
+      HttpResponse response = client.execute(setHeader(httpPost, entity));
+      int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode == HttpStatus.SC_CREATED) {
+        String responseBody = handler.handleResponse(response);
+        JiraIssue createdIssue = objectMapper.readValue(responseBody, JiraIssue.class);
+        logger.warn("Create Issue Key:  " + createdIssue.getKey());
+      } else {
+        logger.warn("Create Response:  " + statusCode);
+      }
     } catch (JsonProcessingException e) {
       logger.error("JsonProcessing Error when Jackson tried to convert", e);
     } catch (AuthenticationException e) {
@@ -73,16 +82,15 @@ public class Issue {
 
   public void get(String url, String projectKey, String updatedAfter) {
     HttpPost httpPost = new HttpPost(url);
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
     String requestBody = "{\"jql\": \"project = " + projectKey + " AND updated > '" + updatedAfter + "'\",\"fields\": [\"*all\"]}";
-    ResponseHandler<String> handler = new BasicResponseHandler();
     try {
       StringEntity entity = new StringEntity(requestBody);
-      HttpResponse response = client.execute(setHeader(httpPost, entity, credentials));
+      HttpResponse response = client.execute(setHeader(httpPost, entity));
       String responseBody = handler.handleResponse(response);
       logger.warn("Get Response: " + responseBody);
       JiraIssues jiraIssues = objectMapper.readValue(responseBody, JiraIssues.class);
-      logger.warn("Get JiraIssue: " + jiraIssues);
+      Optional<JiraIssue> jiraIssue = jiraIssues.getIssues().stream().findFirst();
+      jiraIssue.ifPresent(issue -> logger.warn("Get JiraIssue: " + issue.getKey()));
     } catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);
     } catch (AuthenticationException e) {
@@ -98,11 +106,11 @@ public class Issue {
   public void updateStatus(String issueKey, Status status) {
     String url = "http://localhost:8080/rest/api/latest/issue/" + issueKey + "/transitions";
     HttpPost httpPost = new HttpPost(url);
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
     String requestBody = "{\"transition\": {\"id\": \"" + status.transitionID + "\"}}";
+    logger.warn("Update request: " + requestBody);
     try {
       StringEntity entity = new StringEntity(requestBody);
-      HttpResponse response = client.execute(setHeader(httpPost, entity, credentials));
+      HttpResponse response = client.execute(setHeader(httpPost, entity));
       logger.warn("Update status Response: " + response.getStatusLine());
     }catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);
@@ -113,12 +121,15 @@ public class Issue {
     }
   }
 
-  private HttpPost setHeader(HttpPost httpPost, StringEntity entity, Credentials credentials) throws AuthenticationException{
+  private HttpPost setHeader(HttpPost httpPost, StringEntity entity) throws AuthenticationException{
     httpPost.setEntity(entity);
     httpPost.setHeader("Accept", "application/json");
     httpPost.setHeader("Content-type", "application/json");
-    httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
+    httpPost.addHeader(new BasicScheme().authenticate(getUserCredentials(), httpPost, null));
     return httpPost;
   }
 
+  private UsernamePasswordCredentials getUserCredentials() {
+    return new UsernamePasswordCredentials(jiraConfigProperties.getUsername(), jiraConfigProperties.getPassword());
+  }
 }
