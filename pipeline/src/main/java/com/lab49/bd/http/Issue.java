@@ -66,16 +66,16 @@ public class Issue {
       } else {
         logger.warn("Issue not created. Create Response:  " + statusCode);
       }
+    } catch (ClientProtocolException e) {
+      logger.error("ClientProtocolException Error", e);
     } catch (JsonProcessingException e) {
-      logger.error("JsonProcessing Error when Jackson tried to convert", e);
+      logger.error("JsonProcessingException Error", e);
+    } catch (UnsupportedEncodingException e) {
+      logger.error("UnsupportedEncodingException Error", e);
     } catch (AuthenticationException e) {
       logger.error("Authentication Error", e);
-    } catch (UnsupportedEncodingException e) {
-      logger.error("Json Encoding Error", e);
-    } catch (ClientProtocolException e) {
-      logger.error("ClientProtocol Error", e);
     } catch (IOException e) {
-      logger.error("I/O Error", e);
+      logger.error("IOException Error", e);
     } catch (URISyntaxException e) {
       logger.error("URISyntaxException Error", e);
     }
@@ -96,12 +96,12 @@ public class Issue {
       } else {
         logger.warn("Could not get issues:  " + statusCode);
       }
+    } catch (ClientProtocolException e) {
+      logger.error("ClientProtocolException Error", e);
     } catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);
     } catch (AuthenticationException e) {
       logger.error("Authentication Error", e);
-    } catch (ClientProtocolException e) {
-      logger.error("ClientProtocol Error", e);
     } catch (IOException e) {
       logger.error("I/O Error", e);
     } catch (URISyntaxException e) {
@@ -124,6 +124,8 @@ public class Issue {
       } else {
         logger.warn("Could not update status of issue " + issueKey + ". Server response: " + statusCode);
       }
+    } catch (ClientProtocolException e) {
+      logger.error("ClientProtocolException Error", e);
     } catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);
     } catch (AuthenticationException e) {
@@ -149,6 +151,8 @@ public class Issue {
       } else {
         logger.warn("Could not add comment to issue " + issueKey + ". Server response: " + statusCode);
       }
+    } catch (ClientProtocolException e) {
+      logger.error("ClientProtocolException Error", e);
     } catch (UnsupportedEncodingException e) {
       logger.error("Json Encoding Error", e);
     } catch (AuthenticationException e) {
