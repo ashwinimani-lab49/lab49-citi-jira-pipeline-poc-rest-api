@@ -6,6 +6,7 @@ import com.lab49.bd.model.Fields;
 import com.lab49.bd.model.IssueType;
 import com.lab49.bd.model.JiraIssue;
 import com.lab49.bd.model.Project;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.batch.core.Step;
@@ -38,7 +39,7 @@ public class FlowConfiguration {
           IssueType issueType = new IssueType();
           issueType.setId("10000");
           Project project = new Project();
-          project.setKey("RAPI");
+          project.setKey("TES");
           Fields fields = new Fields();
           fields.setProject(project);
           fields.setIssuetype(issueType);
@@ -54,7 +55,7 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("RAPI", getFormattedDateTime());
+          issue.get("TES", getFormattedDateTime());
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -63,7 +64,7 @@ public class FlowConfiguration {
   public Step updateStatusOfIssue() {
     return stepBuilderFactory.get("updateIssuesStatus")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.updateStatus("RAPI-51", Status.IN_PROGRESS);
+          issue.updateStatus("TES-16", Status.IN_PROGRESS);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -72,7 +73,7 @@ public class FlowConfiguration {
   public Step addComment() {
     return stepBuilderFactory.get("addComment")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.addComment("RAPI-51", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+          issue.addComment("TES-16", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
           return RepeatStatus.FINISHED;
         }).build();
   }
