@@ -9,8 +9,316 @@
     }
   },
   {
+    "jiraField": "custom_keyContacts",
+    "almField": "rdsTester",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "fixVersions",
+    "almField": "activationDate",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "fixVersions",
+    "almField": "activationRelease",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "summary",
+    "almField": "itemNumber",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "relatedItemNumber",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "labels",
+    "almField": "itemType",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "labels",
+    "almField": "workStream",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "summary",
+    "almField": "name",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "region",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "products",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "requestor_owner(s)",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "rdsSupportContacts",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
     "jiraField": "comments",
     "almField": "comments",
     "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "typeOfTesting",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "tester",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "description",
+    "almField": "brd",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "frd",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "frdContact",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "codeDropDate",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "migrationToProdCMPNumber",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "approvedBusinessImpact",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "impactToME",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "attributesImpacted",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "unapprovedBusinessImpact",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "consumers",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "consumersImpacted",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "crOwner",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "description",
+    "almField": "criticality",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "dataDemandNumber",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "description",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "frdOwner1",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "impactedAttributes",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "impactedFeeds",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "programApproved",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "key",
+    "almField": "jiraNumber",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "justification",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "materiality",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "operationalImpact",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "operationalOwner1",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "operationalOwner2",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "operationalOwner3",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "operationalOwner4",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "priority",
+    "almField": "priority",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "description",
+    "almField": "product",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "description",
+    "almField": "program",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "custom_keyContacts",
+    "almField": "regionalLeadName",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "custom_AC",
+    "almField": "regressionApplicable",
+    "fieldMappingType": "STRAIGHT"
+  },
+  {
+    "jiraField": "status",
+    "almField": "status",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "fixVersions",
+    "almField": "targetRelease",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
   }
 ]
