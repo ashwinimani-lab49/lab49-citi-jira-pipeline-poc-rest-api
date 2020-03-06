@@ -9,6 +9,11 @@ import com.lab49.bd.model.Project;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -79,13 +84,30 @@ public class FlowConfiguration {
   }
 
   @Bean
+  public Step testJsonSchema() {
+    return stepBuilderFactory.get("testJsonSchema")
+        .tasklet((stepContribution, chunkContext) -> {
+          JSONObject jsonSchema = new JSONObject(
+            new JSONTokener(FlowConfiguration.class.getResourceAsStream("/fieldMappingsSchema.json"))
+          );
+          JSONArray jsonSubject = new JSONArray(
+              new JSONTokener(FlowConfiguration.class.getResourceAsStream("/fieldMappings.json"))
+          );
+          Schema schema = SchemaLoader.load(jsonSchema);
+          schema.validate(jsonSubject);
+          return RepeatStatus.FINISHED;
+        }).build();
+  }
+
+  @Bean
   public Flow jiraIssueCreationFlow() {
     FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("jiraIssueCreationFlow");
-    flowBuilder.start(createIssueInJira())
-        .next(getAllIssuesAfterLastSync())
-        .next(updateStatusOfIssue())
-        .next(addComment())
-        .end();
+//    flowBuilder.start(createIssueInJira())
+//        .next(getAllIssuesAfterLastSync())
+//        .next(updateStatusOfIssue())
+//        .next(addComment())
+//        .end();
+    flowBuilder.start(testJsonSchema()).end();
     return flowBuilder.build();
 
   }

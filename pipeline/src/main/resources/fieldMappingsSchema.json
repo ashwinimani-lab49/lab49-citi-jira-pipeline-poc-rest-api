@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Jira-QC mapping",
+  "description" : "List of  Jira and QC mapping fields",
+  "type": "array",
+  "items":  {
+    "type": "object",
+    "properties": {
+      "jiraField": { "type":  "string" },
+      "almField": { "type":  "string" },
+      "fieldMappingType": { "enum": ["STRAIGHT", "MAP"] },
+      "fieldValueMapping": { "$ref":  "#/definitions/valueMappingMap" }
+    },
+    "additionalProperties": false,
+    "anyOf": [
+      {
+        "properties": {
+          "fieldMappingType": {"const": "MAP"}
+        },
+        "required": ["jiraField", "almField","fieldMappingType","fieldValueMapping"]
+      },
+      {
+        "properties": {
+          "fieldMappingType": {"const": "STRAIGHT"}
+        },
+        "required": ["jiraField", "almField", "fieldMappingType"],
+        "not": {
+          "required": ["fieldValueMapping"]
+        }
+      }
+    ]
+  },
+  "definitions": {
+    "valueMappingMap" : {
+      "$id": "#valueMappingMap",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}
