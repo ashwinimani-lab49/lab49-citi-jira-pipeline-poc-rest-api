@@ -95,6 +95,7 @@ public class FlowConfiguration {
           );
           Schema schema = SchemaLoader.load(jsonSchema);
           schema.validate(jsonSubject);
+          System.out.println(jsonSubject);
           return RepeatStatus.FINISHED;
         }).build();
   }
