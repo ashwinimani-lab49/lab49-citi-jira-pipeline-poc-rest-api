@@ -15,6 +15,8 @@ public class JobConfiguration {
   @Autowired
   public JobBuilderFactory jobBuilderFactory;
 
+  @Autowired
+
   @Bean
   public Job jiraIntegrationJob(Flow jiraIssueCreationFlow) {
     SimpleDateFormat simpleDateFomat = new SimpleDateFormat("yyyyMMddHHmmss");
