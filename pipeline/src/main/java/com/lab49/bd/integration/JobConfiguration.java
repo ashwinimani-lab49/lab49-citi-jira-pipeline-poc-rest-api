@@ -15,16 +15,14 @@ public class JobConfiguration {
   @Autowired
   public JobBuilderFactory jobBuilderFactory;
 
-  @Autowired
-
   @Bean
   public Job jiraIntegrationJob(Flow jiraIssueCreationFlow) {
-    SimpleDateFormat simpleDateFomat = new SimpleDateFormat("yyyyMMddHHmmss");
-    String dateString = simpleDateFomat.format(new Date());
-    return jobBuilderFactory.get(String.format("jiraInterationJob%s", dateString))
-        .start(jiraIssueCreationFlow)
-        .end()
-        .build();
-  }
+  SimpleDateFormat simpleDateFomat = new SimpleDateFormat("yyyyMMddHHmmss");
+  String dateString = simpleDateFomat.format(new Date());
+  return jobBuilderFactory.get(String.format("jiraInterationJob%s", dateString))
+      .start(jiraIssueCreationFlow)
+      .end()
+      .build();
+}
 
 }
