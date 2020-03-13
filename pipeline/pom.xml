@@ -75,9 +75,9 @@
         </dependency>
         <!--To Validate JSON Object against JSON schema-->
         <dependency>
-            <groupId>org.everit.json</groupId>
-            <artifactId>org.everit.json.schema</artifactId>
-            <version>1.5.1</version>
+            <groupId>com.github.fge</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>2.2.6</version>
         </dependency>
         <!--In-Memory database for testing-->
         <dependency>

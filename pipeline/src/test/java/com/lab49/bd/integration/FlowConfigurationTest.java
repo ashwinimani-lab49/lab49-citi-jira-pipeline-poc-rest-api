@@ -54,6 +54,6 @@ public class FlowConfigurationTest {
     ExitStatus exitStatus = jobExecution.getExitStatus();
     // Then
     assertThat(stepExecutions.size(), is(1));
-    assertThat(exitStatus, is("COMPLETED"));
+    assertThat(exitStatus.getExitCode(), is("COMPLETED"));
   }
 }

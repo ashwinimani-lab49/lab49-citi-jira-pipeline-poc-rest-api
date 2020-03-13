@@ -1,5 +1,9 @@
 package com.lab49.bd.integration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.lab49.bd.http.Issue;
 import com.lab49.bd.http.Issue.Status;
 import com.lab49.bd.model.Fields;
@@ -9,11 +13,6 @@ import com.lab49.bd.model.Project;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.everit.json.schema.Schema;
-import org.everit.json.schema.loader.SchemaLoader;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -87,15 +86,12 @@ public class FlowConfiguration {
   public Step testJsonSchema() {
     return stepBuilderFactory.get("testJsonSchema")
         .tasklet((stepContribution, chunkContext) -> {
-          JSONObject jsonSchema = new JSONObject(
-            new JSONTokener(FlowConfiguration.class.getResourceAsStream("/fieldMappingsSchema.json"))
-          );
-          JSONArray jsonSubject = new JSONArray(
-              new JSONTokener(FlowConfiguration.class.getResourceAsStream("/fieldMappings.json"))
-          );
-          Schema schema = SchemaLoader.load(jsonSchema);
-          schema.validate(jsonSubject);
-          System.out.println(jsonSubject);
+          JsonNode jsonSchema = JsonLoader.fromResource("/fieldMappingsSchema.json");
+          JsonNode jsonSubject = JsonLoader.fromResource("/fieldMappings.json");
+          JsonSchema schema = JsonSchemaFactory.byDefault().getJsonSchema(jsonSchema);
+          if (schema.validate(jsonSubject).isSuccess()) {
+            System.out.println(jsonSubject);
+          }
           return RepeatStatus.FINISHED;
         }).build();
   }
