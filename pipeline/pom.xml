@@ -79,6 +79,13 @@
             <artifactId>org.everit.json.schema</artifactId>
             <version>1.5.1</version>
         </dependency>
+        <!--In-Memory database for testing-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

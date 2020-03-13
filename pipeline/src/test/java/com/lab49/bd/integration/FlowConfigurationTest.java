@@ -1,5 +1,7 @@
 package com.lab49.bd.integration;
 
+import com.lab49.bd.config.JiraConfigProperties;
+import com.lab49.bd.http.Issue;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.Test;
@@ -8,6 +10,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
@@ -25,8 +28,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 @RunWith(SpringRunner.class)
 @SpringBatchTest
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {FlowConfiguration.class, JobLauncherTestUtils.class,
-    JobRepositoryTestUtils.class, StepBuilderFactory.class})
+@ContextConfiguration(classes = {JiraConfigProperties.class, Issue.class, JobConfiguration.class, FlowConfiguration.class, BatchTestConfig.class})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class})
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
@@ -44,10 +46,13 @@ public class FlowConfigurationTest {
 
   @Test
   public void whenStepTestJsonSchemaExecuted_thenSuccess() throws Exception {
-    JobExecution jobExecution = jobLauncherTestUtils.launchStep("testJsonSchema");
+    // Given
+    JobParameters jobParameters = jobLauncherTestUtils.getUniqueJobParameters();
+    // When
+    JobExecution jobExecution = jobLauncherTestUtils.launchStep("testJsonSchema", jobParameters);
     Collection stepExecutions = jobExecution.getStepExecutions();
     ExitStatus exitStatus = jobExecution.getExitStatus();
-
+    // Then
     assertThat(stepExecutions.size(), is(1));
     assertThat(exitStatus, is("COMPLETED"));
   }
