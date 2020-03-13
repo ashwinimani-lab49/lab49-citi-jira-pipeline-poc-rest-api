@@ -1,0 +1,16 @@
+[
+  {
+    "jiraField": "fixVersions",
+    "almField": "actualRelease",
+    "fieldMappingType": "MAP",
+    "fieldValueMapping": {
+      "a": "1",
+      "b": "2"
+    }
+  },
+  {
+    "jiraField": "summary",
+    "almField": "itemNumber",
+    "fieldMappingType": "STRAIGHT"
+  }
+]
