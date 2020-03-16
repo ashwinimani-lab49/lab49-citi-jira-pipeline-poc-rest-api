@@ -1,5 +1,6 @@
 package com.lab49.bd.integration;
 
+import com.lab49.bd.config.JiraConfigProperties;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
@@ -17,5 +18,13 @@ public class BatchTestConfig {
   @Bean
   JobRepositoryTestUtils jobRepositoryTestUtils() {
     return new JobRepositoryTestUtils();
+  }
+
+  @Bean
+  JiraConfigProperties jiraConfigProperties() {
+    JiraConfigProperties jiraConfigProperties = new JiraConfigProperties();
+    jiraConfigProperties.setPassword("admin");
+    jiraConfigProperties.setUsername("admin");
+    return jiraConfigProperties;
   }
 }

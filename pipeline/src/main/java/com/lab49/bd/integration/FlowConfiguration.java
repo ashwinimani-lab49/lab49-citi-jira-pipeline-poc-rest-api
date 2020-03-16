@@ -99,12 +99,12 @@ public class FlowConfiguration {
   @Bean
   public Flow jiraIssueCreationFlow() {
     FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("jiraIssueCreationFlow");
-//    flowBuilder.start(createIssueInJira())
-//        .next(getAllIssuesAfterLastSync())
-//        .next(updateStatusOfIssue())
-//        .next(addComment())
-//        .end();
-    flowBuilder.start(testJsonSchema()).end();
+    flowBuilder.start(createIssueInJira())
+        .next(getAllIssuesAfterLastSync())
+        .next(updateStatusOfIssue())
+        .next(addComment())
+        .next(testJsonSchema())
+        .end();
     return flowBuilder.build();
 
   }
