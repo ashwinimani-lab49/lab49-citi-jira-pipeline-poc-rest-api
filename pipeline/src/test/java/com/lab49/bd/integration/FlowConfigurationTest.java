@@ -1,7 +1,5 @@
 package com.lab49.bd.integration;
 
-import com.lab49.bd.config.JiraConfigProperties;
-import com.lab49.bd.http.Issue;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.Test;
@@ -28,7 +26,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 @RunWith(SpringRunner.class)
 @SpringBatchTest
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {Issue.class, JobConfiguration.class, FlowConfiguration.class, BatchTestConfig.class})
+@ContextConfiguration(classes = {JobConfiguration.class, FlowConfiguration.class, BatchTestConfig.class})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class})
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)

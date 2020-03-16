@@ -33,11 +33,15 @@ public class Issue {
   final static Logger logger = Logger.getLogger(Issue.class);
   @Autowired
   private JiraConfigProperties jiraConfigProperties;
-  final static HttpClient client = HttpClients.createDefault();
+  private final HttpClient client;
   final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
   static {
     objectMapper.setSerializationInclusion(Include.NON_NULL);
     objectMapper.setSerializationInclusion(Include.NON_EMPTY);
+  }
+
+  public Issue(HttpClient client) {
+    this.client = client;
   }
 
   public enum Status {
