@@ -1,4 +1,4 @@
-package com.lab49.bd.config;
+package com.lab49.bd.http;
 
 import com.sun.istack.internal.NotNull;
 import lombok.Data;

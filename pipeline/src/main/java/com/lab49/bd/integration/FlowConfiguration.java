@@ -71,7 +71,7 @@ public class FlowConfiguration {
   public Step updateStatusOfIssue() {
     return stepBuilderFactory.get("updateIssuesStatus")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.updateStatus("TES-18", Status.IN_PROGRESS);
+          issue.updateStatus("TES-17", Status.IN_PROGRESS);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -80,7 +80,7 @@ public class FlowConfiguration {
   public Step addComment() {
     return stepBuilderFactory.get("addComment")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.addComment("TES-18", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+          issue.addComment("TES-17", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
           return RepeatStatus.FINISHED;
         }).build();
   }

@@ -2,7 +2,7 @@ package com.lab49.bd.integration;
 
 import static org.mockito.Mockito.mock;
 
-import com.lab49.bd.config.JiraConfigProperties;
+import com.lab49.bd.http.JiraConfigProperties;
 import com.lab49.bd.http.Issue;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
