@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.lab49.bd.http.Issue;
-import com.lab49.bd.http.Issue.Status;
+import com.lab49.bd.http.IssueService;
+import com.lab49.bd.http.IssueService.Status;
 import com.lab49.bd.model.Fields;
 import com.lab49.bd.model.IssueType;
 import com.lab49.bd.model.JiraIssue;
@@ -27,10 +27,10 @@ public class FlowConfiguration {
   @Autowired
   public StepBuilderFactory stepBuilderFactory;
 
-  private final Issue issue;
+  private final IssueService issueService;
 
-  public FlowConfiguration(Issue issue) {
-    this.issue = issue;
+  public FlowConfiguration(IssueService issueService) {
+    this.issueService = issueService;
   }
 
   private String getFormattedDateTime() {
@@ -53,7 +53,7 @@ public class FlowConfiguration {
           fields.setSummary("Creating issue at " + getFormattedDateTime());
           JiraIssue jiraIssue = new JiraIssue();
           jiraIssue.setFields(fields);
-          issue.create(jiraIssue);
+          issueService.create(jiraIssue);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -62,7 +62,7 @@ public class FlowConfiguration {
   public Step getAllIssuesAfterLastSync() {
     return stepBuilderFactory.get("getIssuesStep")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.get("TES", getFormattedDateTime());
+          issueService.get("TES", getFormattedDateTime());
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -71,7 +71,7 @@ public class FlowConfiguration {
   public Step updateStatusOfIssue() {
     return stepBuilderFactory.get("updateIssuesStatus")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.updateStatus("TES-17", Status.IN_PROGRESS);
+          issueService.updateStatus("TES-17", Status.IN_PROGRESS);
           return RepeatStatus.FINISHED;
         }).build();
   }
@@ -80,7 +80,8 @@ public class FlowConfiguration {
   public Step addComment() {
     return stepBuilderFactory.get("addComment")
         .tasklet((stepContribution, chunkContext) -> {
-          issue.addComment("TES-17", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+          issueService
+              .addComment("TES-17", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
           return RepeatStatus.FINISHED;
         }).build();
   }

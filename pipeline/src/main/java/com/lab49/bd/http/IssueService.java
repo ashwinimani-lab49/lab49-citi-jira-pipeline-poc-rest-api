@@ -27,8 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Issue {
-  final static Logger logger = Logger.getLogger(Issue.class);
+public class IssueService {
+  final static Logger logger = Logger.getLogger(IssueService.class);
   @Autowired
   private JiraConfigProperties jiraConfigProperties;
   private final CloseableHttpClient client;
@@ -38,7 +38,7 @@ public class Issue {
     objectMapper.setSerializationInclusion(Include.NON_EMPTY);
   }
 
-  public Issue(CloseableHttpClient client) {
+  public IssueService(CloseableHttpClient client) {
     this.client = client;
   }
 

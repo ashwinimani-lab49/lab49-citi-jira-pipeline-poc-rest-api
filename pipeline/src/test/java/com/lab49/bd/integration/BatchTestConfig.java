@@ -3,14 +3,13 @@ package com.lab49.bd.integration;
 import static org.mockito.Mockito.mock;
 
 import com.lab49.bd.http.JiraConfigProperties;
-import com.lab49.bd.http.Issue;
+import com.lab49.bd.http.IssueService;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.apache.http.client.HttpClient;
 
 @Configuration
 @EnableBatchProcessing
@@ -39,7 +38,7 @@ public class BatchTestConfig {
   }
 
   @Bean
-  Issue issue() {
-    return mock(Issue.class);
+  IssueService issue() {
+    return mock(IssueService.class);
   }
 }
