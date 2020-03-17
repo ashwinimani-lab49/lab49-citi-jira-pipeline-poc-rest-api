@@ -108,6 +108,11 @@ public class FlowConfiguration {
         .next(addComment())
         .next(testJsonSchema())
         .end();
+
+//    flowBuilder.start(addComment())
+//        .next(getAllIssuesAfterLastSync())
+//        .next(testJsonSchema())
+//        .end();
     return flowBuilder.build();
 
   }

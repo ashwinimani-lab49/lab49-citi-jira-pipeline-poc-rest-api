@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import com.lab49.bd.http.JiraConfigProperties;
 import com.lab49.bd.http.Issue;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
@@ -33,8 +34,8 @@ public class BatchTestConfig {
   }
 
   @Bean
-  HttpClient httpClient() {
-    return mock(HttpClient.class);
+  CloseableHttpClient httpClient() {
+    return mock(CloseableHttpClient.class);
   }
 
   @Bean

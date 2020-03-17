@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class IntegrationJobScheduler {
 
+  private final String SCHEDULE_ID = "scheduleId";
   private final JobLauncher jobLauncher;
   private final Job job;
 
@@ -21,7 +22,7 @@ public class IntegrationJobScheduler {
   @Scheduled(cron = "${job.schedule.cron.expression}")
   public void perform() throws Exception {
     JobParameters params = new JobParametersBuilder()
-        .addString("JobID", String.valueOf(System.currentTimeMillis()))
+        .addString(SCHEDULE_ID, String.valueOf(System.currentTimeMillis()))
         .toJobParameters();
     jobLauncher.run(job, params);
   }

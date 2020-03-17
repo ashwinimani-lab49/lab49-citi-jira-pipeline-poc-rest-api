@@ -18,10 +18,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,14 +31,14 @@ public class Issue {
   final static Logger logger = Logger.getLogger(Issue.class);
   @Autowired
   private JiraConfigProperties jiraConfigProperties;
-  private final HttpClient client;
+  private final CloseableHttpClient client;
   final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
   static {
     objectMapper.setSerializationInclusion(Include.NON_NULL);
     objectMapper.setSerializationInclusion(Include.NON_EMPTY);
   }
 
-  public Issue(HttpClient client) {
+  public Issue(CloseableHttpClient client) {
     this.client = client;
   }
 
@@ -92,7 +92,7 @@ public class Issue {
       int statusCode = response.getStatusLine().getStatusCode();
       if (statusCode == HttpStatus.SC_OK) {
         JiraIssues jiraIssues = objectMapper.readValue(response.getEntity().getContent(), JiraIssues.class);
-        logger.warn("Total issues returned: " + jiraIssues.getTotal());
+        logger.warn("Total issues updated after " + updatedAfter + ": " + jiraIssues.getTotal());
         Optional<JiraIssue> jiraIssue = jiraIssues.getIssues().stream().findFirst();
         jiraIssue.ifPresent(issue -> logger.warn("First JiraIssue: " + issue.getKey()));
       } else {
