@@ -67,4 +67,43 @@ public class FlowConfigurationTest {
     assertThat(stepExecutions.size(), is(1));
     assertThat(exitStatus.getExitCode(), is("COMPLETED"));
   }
+
+  @Test
+  public void whenStepGetIssuesStepExecuted_thenSuccess() throws Exception {
+    // Given
+    JobParameters jobParameters = jobLauncherTestUtils.getUniqueJobParameters();
+    // When
+    JobExecution jobExecution = jobLauncherTestUtils.launchStep("getIssuesStep", jobParameters);
+    Collection stepExecutions = jobExecution.getStepExecutions();
+    ExitStatus exitStatus = jobExecution.getExitStatus();
+    // Then
+    assertThat(stepExecutions.size(), is(1));
+    assertThat(exitStatus.getExitCode(), is("COMPLETED"));
+  }
+
+  @Test
+  public void whenStepUpdateIssuesStatusStepExecuted_thenSuccess() throws Exception {
+    // Given
+    JobParameters jobParameters = jobLauncherTestUtils.getUniqueJobParameters();
+    // When
+    JobExecution jobExecution = jobLauncherTestUtils.launchStep("updateIssuesStatus", jobParameters);
+    Collection stepExecutions = jobExecution.getStepExecutions();
+    ExitStatus exitStatus = jobExecution.getExitStatus();
+    // Then
+    assertThat(stepExecutions.size(), is(1));
+    assertThat(exitStatus.getExitCode(), is("COMPLETED"));
+  }
+
+  @Test
+  public void whenAddCommentStepExecuted_thenSuccess() throws Exception {
+    // Given
+    JobParameters jobParameters = jobLauncherTestUtils.getUniqueJobParameters();
+    // When
+    JobExecution jobExecution = jobLauncherTestUtils.launchStep("addComment", jobParameters);
+    Collection stepExecutions = jobExecution.getStepExecutions();
+    ExitStatus exitStatus = jobExecution.getExitStatus();
+    // Then
+    assertThat(stepExecutions.size(), is(1));
+    assertThat(exitStatus.getExitCode(), is("COMPLETED"));
+  }
 }
