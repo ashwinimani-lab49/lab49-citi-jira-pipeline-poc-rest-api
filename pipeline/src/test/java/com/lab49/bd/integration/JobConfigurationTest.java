@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.containsString;
 
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
@@ -26,8 +26,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 @RunWith(SpringRunner.class)
 @SpringBatchTest
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {JobConfiguration.class, JobBuilderFactory.class,
-    JobLauncherTestUtils.class, JobRepositoryTestUtils.class})
+@ContextConfiguration(classes = {JobConfiguration.class, FlowConfiguration.class, BatchTestConfig.class})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class})
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
@@ -50,7 +49,7 @@ public class JobConfigurationTest {
     JobInstance jobInstance = jobExecution.getJobInstance();
     ExitStatus exitStatus = jobExecution.getExitStatus();
 
-    assertThat(jobInstance.getJobName(), is("jiraIntegrationJob"));
-    assertThat(exitStatus, is("COMPLETED"));
+    assertThat(jobInstance.getJobName(), containsString("jiraIntegrationJob"));
+    assertThat(exitStatus.getExitCode(), is("COMPLETED"));
   }
 }
