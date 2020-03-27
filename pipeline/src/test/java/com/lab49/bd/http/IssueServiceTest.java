@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lab49.bd.http.IssueService.Status;
 import com.lab49.bd.integration.FlowConfiguration;
 import com.lab49.bd.model.Fields;
 import com.lab49.bd.model.IssueType;
@@ -29,8 +30,8 @@ public class IssueServiceTest {
   @Mock
   JiraConfigProperties jiraConfigProperties;
 
-  CloseableHttpClient closeableHttpClient = mock(CloseableHttpClient.class);
-  CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
+  private CloseableHttpClient closeableHttpClient = mock(CloseableHttpClient.class);
+  private CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
 
   @Mock
   StatusLine statusLine;
@@ -38,13 +39,13 @@ public class IssueServiceTest {
   @Mock
   HttpEntity httpEntity;
 
-  String createIssueResponse = "{\n"
+  private String createIssueResponse = "{\n"
       + "  \"id\": \"10502\",\n"
       + "  \"key\": \"TES-27\",\n"
       + "  \"self\": \"http://localhost:8080/rest/api/latest/issue/10502\"\n"
       + "}";
 
-  String getIssuesResponse = "{\n"
+  private String getIssuesResponse = "{\n"
       + "  \"expand\": \"names,schema\",\n"
       + "  \"startAt\": 0,\n"
       + "  \"maxResults\": 50,\n"
@@ -75,8 +76,47 @@ public class IssueServiceTest {
       + "  ]\n"
       + "}";
 
-  InputStream createIssueIpStream = new ByteArrayInputStream(createIssueResponse.getBytes());
-  InputStream getIssuesIpStream = new ByteArrayInputStream(getIssuesResponse.getBytes());
+  private String addCommentResponse = "{\n"
+      + "  \"self\": \"http://localhost:8080/rest/api/2/issue/10616/comment/10302\",\n"
+      + "  \"id\": \"10302\",\n"
+      + "  \"author\": {\n"
+      + "    \"self\": \"http://localhost:8080/rest/api/2/user?username=amani\",\n"
+      + "    \"name\": \"amani\",\n"
+      + "    \"key\": \"JIRAUSER10000\",\n"
+      + "    \"emailAddress\": \"ashwini.mani@lab49.com\",\n"
+      + "    \"avatarUrls\": {\n"
+      + "      \"48x48\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=48\",\n"
+      + "      \"24x24\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=24\",\n"
+      + "      \"16x16\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=16\",\n"
+      + "      \"32x32\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=32\"\n"
+      + "    },\n"
+      + "    \"displayName\": \"Ashwini Mani\",\n"
+      + "    \"active\": true,\n"
+      + "    \"timeZone\": \"GMT\"\n"
+      + "  },\n"
+      + "  \"body\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\",\n"
+      + "  \"updateAuthor\": {\n"
+      + "    \"self\": \"http://localhost:8080/rest/api/2/user?username=amani\",\n"
+      + "    \"name\": \"amani\",\n"
+      + "    \"key\": \"JIRAUSER10000\",\n"
+      + "    \"emailAddress\": \"ashwini.mani@lab49.com\",\n"
+      + "    \"avatarUrls\": {\n"
+      + "      \"48x48\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=48\",\n"
+      + "      \"24x24\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=24\",\n"
+      + "      \"16x16\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=16\",\n"
+      + "      \"32x32\": \"https://www.gravatar.com/avatar/16ad7a8e67d38d9ec2ee0066521ac603?d=mm&s=32\"\n"
+      + "    },\n"
+      + "    \"displayName\": \"Ashwini Mani\",\n"
+      + "    \"active\": true,\n"
+      + "    \"timeZone\": \"GMT\"\n"
+      + "  },\n"
+      + "  \"created\": \"2020-01-31T15:27:54.157+0000\",\n"
+      + "  \"updated\": \"2020-01-31T15:27:54.157+0000\"\n"
+      + "}";
+
+  private InputStream createIssueIpStream = new ByteArrayInputStream(createIssueResponse.getBytes());
+  private InputStream getIssuesIpStream = new ByteArrayInputStream(getIssuesResponse.getBytes());
+  private InputStream addCommentIpStream = new ByteArrayInputStream(addCommentResponse.getBytes());
 
   @InjectMocks
   private IssueService issueService = new IssueService(closeableHttpClient);
@@ -120,10 +160,26 @@ public class IssueServiceTest {
 
   @Test
   public void updateStatus() throws Exception {
+    when(jiraConfigProperties.getUsername()).thenReturn("admin");
+    when(jiraConfigProperties.getPassword()).thenReturn("admin");
+    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
+    when(httpResponse.getStatusLine()).thenReturn(statusLine);
+    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NO_CONTENT);
+
+    issueService.updateStatus("TES-11", Status.IN_PROGRESS);
   }
 
   @Test
   public void addComment() throws Exception {
+    when(jiraConfigProperties.getUsername()).thenReturn("admin");
+    when(jiraConfigProperties.getPassword()).thenReturn("admin");
+    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
+    when(httpResponse.getStatusLine()).thenReturn(statusLine);
+    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
+    when(httpResponse.getEntity()).thenReturn(httpEntity);
+    when(httpEntity.getContent()).thenReturn(addCommentIpStream);
+
+    issueService.addComment("TES-11", "Lorem ipsum dolor sit amet");
   }
 
 }
