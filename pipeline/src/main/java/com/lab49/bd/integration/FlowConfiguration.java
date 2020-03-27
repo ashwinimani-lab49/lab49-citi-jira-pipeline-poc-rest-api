@@ -33,7 +33,7 @@ public class FlowConfiguration {
     this.issueService = issueService;
   }
 
-  private String getFormattedDateTime() {
+  public static String getFormattedDateTime() {
     LocalDateTime dateTime = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
     return dateTime.format(formatter);
