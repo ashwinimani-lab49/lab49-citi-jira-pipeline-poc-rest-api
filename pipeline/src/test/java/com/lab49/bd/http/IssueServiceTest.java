@@ -18,11 +18,14 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IssueServiceTest {
@@ -121,6 +124,15 @@ public class IssueServiceTest {
   @InjectMocks
   private IssueService issueService = new IssueService(closeableHttpClient);
 
+  @Before
+  public void setUp() throws Exception {
+    when(jiraConfigProperties.getUsername()).thenReturn("admin");
+    when(jiraConfigProperties.getPassword()).thenReturn("admin");
+    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
+    when(httpResponse.getStatusLine()).thenReturn(statusLine);
+    when(httpResponse.getEntity()).thenReturn(httpEntity);
+  }
+
   @Test
   public void create() throws Exception {
     IssueType issueType = new IssueType();
@@ -134,12 +146,12 @@ public class IssueServiceTest {
     JiraIssue jiraIssue = new JiraIssue();
     jiraIssue.setFields(fields);
 
-    when(jiraConfigProperties.getUsername()).thenReturn("admin");
-    when(jiraConfigProperties.getPassword()).thenReturn("admin");
-    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
-    when(httpResponse.getStatusLine()).thenReturn(statusLine);
-    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
-    when(httpResponse.getEntity()).thenReturn(httpEntity);
+    when(statusLine.getStatusCode()).thenAnswer(new Answer<Integer>() {
+      public Integer answer(InvocationOnMock invocationOnMock) {
+        return HttpStatus.SC_CREATED;
+      }
+    });
+//    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
     when(httpEntity.getContent()).thenReturn(createIssueIpStream);
 
     issueService.create(jiraIssue);
@@ -147,12 +159,7 @@ public class IssueServiceTest {
 
   @Test
   public void get() throws Exception {
-    when(jiraConfigProperties.getUsername()).thenReturn("admin");
-    when(jiraConfigProperties.getPassword()).thenReturn("admin");
-    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
-    when(httpResponse.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
-    when(httpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(getIssuesIpStream);
 
     issueService.get("TES", FlowConfiguration.getFormattedDateTime());
@@ -160,10 +167,6 @@ public class IssueServiceTest {
 
   @Test
   public void updateStatus() throws Exception {
-    when(jiraConfigProperties.getUsername()).thenReturn("admin");
-    when(jiraConfigProperties.getPassword()).thenReturn("admin");
-    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
-    when(httpResponse.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NO_CONTENT);
 
     issueService.updateStatus("TES-11", Status.IN_PROGRESS);
@@ -171,12 +174,7 @@ public class IssueServiceTest {
 
   @Test
   public void addComment() throws Exception {
-    when(jiraConfigProperties.getUsername()).thenReturn("admin");
-    when(jiraConfigProperties.getPassword()).thenReturn("admin");
-    when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
-    when(httpResponse.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
-    when(httpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(addCommentIpStream);
 
     issueService.addComment("TES-11", "Lorem ipsum dolor sit amet");
