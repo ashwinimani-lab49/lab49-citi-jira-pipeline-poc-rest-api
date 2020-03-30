@@ -1,10 +1,10 @@
 package com.lab49.bd.http;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab49.bd.http.IssueService.Status;
 import com.lab49.bd.integration.FlowConfiguration;
 import com.lab49.bd.model.Fields;
@@ -13,9 +13,7 @@ import com.lab49.bd.model.JiraIssue;
 import com.lab49.bd.model.Project;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Before;
@@ -23,9 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IssueServiceTest {
@@ -34,13 +30,7 @@ public class IssueServiceTest {
   JiraConfigProperties jiraConfigProperties;
 
   private CloseableHttpClient closeableHttpClient = mock(CloseableHttpClient.class);
-  private CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
-
-  @Mock
-  StatusLine statusLine;
-
-  @Mock
-  HttpEntity httpEntity;
+  private CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class, RETURNS_DEEP_STUBS);
 
   private String createIssueResponse = "{\n"
       + "  \"id\": \"10502\",\n"
@@ -129,8 +119,6 @@ public class IssueServiceTest {
     when(jiraConfigProperties.getUsername()).thenReturn("admin");
     when(jiraConfigProperties.getPassword()).thenReturn("admin");
     when(closeableHttpClient.execute(any())).thenReturn(httpResponse);
-    when(httpResponse.getStatusLine()).thenReturn(statusLine);
-    when(httpResponse.getEntity()).thenReturn(httpEntity);
   }
 
   @Test
@@ -146,36 +134,31 @@ public class IssueServiceTest {
     JiraIssue jiraIssue = new JiraIssue();
     jiraIssue.setFields(fields);
 
-    when(statusLine.getStatusCode()).thenAnswer(new Answer<Integer>() {
-      public Integer answer(InvocationOnMock invocationOnMock) {
-        return HttpStatus.SC_CREATED;
-      }
-    });
-//    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
-    when(httpEntity.getContent()).thenReturn(createIssueIpStream);
+    when(httpResponse.getStatusLine().getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
+    when(httpResponse.getEntity().getContent()).thenReturn(createIssueIpStream);
 
     issueService.create(jiraIssue);
   }
 
   @Test
   public void get() throws Exception {
-    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
-    when(httpEntity.getContent()).thenReturn(getIssuesIpStream);
+    when(httpResponse.getStatusLine().getStatusCode()).thenReturn(HttpStatus.SC_OK);
+    when(httpResponse.getEntity().getContent()).thenReturn(getIssuesIpStream);
 
     issueService.get("TES", FlowConfiguration.getFormattedDateTime());
   }
 
   @Test
-  public void updateStatus() throws Exception {
-    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NO_CONTENT);
+  public void updateStatus() {
+    when(httpResponse.getStatusLine().getStatusCode()).thenReturn(HttpStatus.SC_NO_CONTENT);
 
     issueService.updateStatus("TES-11", Status.IN_PROGRESS);
   }
 
   @Test
   public void addComment() throws Exception {
-    when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
-    when(httpEntity.getContent()).thenReturn(addCommentIpStream);
+    when(httpResponse.getStatusLine().getStatusCode()).thenReturn(HttpStatus.SC_CREATED);
+    when(httpResponse.getEntity().getContent()).thenReturn(addCommentIpStream);
 
     issueService.addComment("TES-11", "Lorem ipsum dolor sit amet");
   }
